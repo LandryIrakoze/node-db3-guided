@@ -1,6 +1,7 @@
 const express = require('express');
 
 const db = require('../data/db-config.js');
+const Users = require('../users/user-model');
 
 const router = express.Router();
 
@@ -89,22 +90,34 @@ router.delete('/:id', (req, res) => {
 //       res.status(400).json({ message: 'error fetching posts' })
 //     })
 // })
+// router.get('/:id/posts', (req, res) => {
+//   const { id } = req.params;
+//   //select * from posts as p
+//   //join users as u on u.id = p.user_id
+//   //where u.id = 123
+//   db('posts as p')
+//     .join('users as u', 'u.id', '=', 'p.user_id')
+//     .where('u.id', id)
+//     .select('p.id', 'p.contents', 'u.username')
+//     .then(posts => {
+//       res.status(200).json(posts)
+//     })
+//     .catch(err => {
+//       res.status(400).json({ message: 'error fetching posts' })
+//     })
+// })
 router.get('/:id/posts', (req, res) => {
   const { id } = req.params;
   //select * from posts as p
   //join users as u on u.id = p.user_id
   //where u.id = 123
-  db('posts as p')
-    .join('users as u', 'u.id', '=', 'p.user_id')
-    .where('u.id', id)
-    .select('p.id', 'p.contents', 'u.username')
+  Users.findUserPosts(id)
     .then(posts => {
       res.status(200).json(posts)
     })
     .catch(err => {
-      res.status(400).json({ message: 'error fetching posts' })
+      res.status(400).send(err);
     })
 })
-
 
 module.exports = router;
