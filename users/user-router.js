@@ -97,6 +97,7 @@ router.get('/:id/posts', (req, res) => {
   db('posts as p')
     .join('users as u', 'u.id', '=', 'p.user_id')
     .where('u.id', id)
+    .select('p.id', 'p.contents', 'u.username')
     .then(posts => {
       res.status(200).json(posts)
     })
